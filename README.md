@@ -4,4 +4,4 @@ The agent skills I use on every machine. [`mippbipp/conf.nix`](https://github.co
 
 ## Private skills
 
-- Emil Kowalski's course [Animations on the Web](https://animations.dev/) has animation skills.
+- Emil Kowalski's course [Animations on the Web](https://animations.dev/) has animation skills, combined with dialkit skill.
