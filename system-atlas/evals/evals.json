@@ -1,0 +1,35 @@
+{
+  "skill_name": "system-atlas",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're redesigning how our app ingests calendar events from several providers and feeds, normalizes them, and serves them to the planner and a hardware display. I want to talk this through with you visually before we touch code — can you make me an atlas of the current pipeline (the calendar packages, the provider adapters, the device API route) with the open questions we'd need to settle for the redesign?",
+      "expected_output": "Asks which docs policy applies (or reads it from the repo) before committing; atlas home is docs/calendar-pipeline/atlas/ or .scratch/calendar-pipeline/atlas/ accordingly, holding {data.mjs,template.html,build.mjs}, with built atlas.html + SYSTEM.md + README.md + NOTES.md in the parent; published artifact; chapters reveal progressively; every structure labelled with a role shape; questions with Q-IDs; no glossary or ADR created outside the repo's domain-doc convention; a short chat summary with the artifact link and the 3-5 questions only the user can answer.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "ok so we have this atlas already at docs/our-agent/atlas/data.mjs — two things changed: we dropped the nightly reflect job in favour of extraction-per-turn, and we picked Langfuse instead of Phoenix after all. Update it, and tell me what that changes downstream. Don't leave anything stale.",
+      "expected_output": "data.mjs edited (R structure + K hooks + o11y resolution + decisions + chapter 6 story/flow), rebuilt, republished at the same URL, a grep for stale words done, downstream consequences listed (cost model, cadence question, who writes the handoff note now).",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "i'm starting a greenfield side project: a small Telegram bot that watches a few RSS feeds, summarizes new posts with an LLM, and DMs me a digest every morning, with a /mute command. before i build, i want a map of it i can click around and poke holes in — i want it to look like those isometric codebase diagrams people post",
+      "expected_output": "A small atlas (6-9 structures, 4-6 chapters) in docs/<name>/ or .scratch/<name>/ per the repo's docs policy, published; the chat message explains the chapters and asks the 2-3 real questions (digest timing/timezone, dedupe window, LLM model/cost) rather than a generic question list.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "/grill-with-docs i want to add a backup job on my home server that snapshots a few service state dirs to object storage nightly and alerts me if it fails. make an atlas while we grill so i can see it come together.",
+      "expected_output": "One interview: the grilling skill asks the questions one at a time and the atlas has no separate question round; each grilling question appears as a cond entry on the right structure and each answer as {q, r} with the user's words and date; atlas home is .scratch/<name>/atlas/ with .scratch/ git-ignored; resolved terms go to the root GLOSSARY.md and any ADR to docs/adr/ via domain-modeling, with no CONTEXT.md or per-system adr/ folder; build, serve and browser check run in a subagent; rebuild after each round; before suggesting /to-spec, every question is resolved, routed, or marked out of scope, and chapters are offered as tracer-bullet slices.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "i opened atlas.excalidraw for the backup job atlas, dragged the alert box next to the job, drew a new box called 'restic repo' with an arrow from the job, scribbled 'what about retention?' near the store and wrote 'Q-J2: 03:00 local' somewhere. take a look",
+      "expected_output": "Runs fold.mjs instead of reading the scene by eye or editing it; lists each numbered item in plain words with the data.mjs change it implies (move gx/gy, new node with a proposed id and kind, new flow hop, new cond on the store, resolve Q-J2 with the user's words and date); asks before applying and about anything ambiguous; after confirmation edits only data.mjs, runs fold.mjs --accept/--dismiss with the confirmed numbers, rebuilds, and confirms fold.mjs no longer lists them; never hand-edits atlas.excalidraw, atlas.html or SYSTEM.md.",
+      "files": []
+    }
+  ]
+}
