@@ -11,7 +11,7 @@ From the session this skill was distilled from: one agent-architecture atlas, bu
 | Discussion | Proposed 7 structures mapped to runtime primitives; 7 sharp questions; user answered with one-liners | Take defaults where the user says "defaults are fine" and say which |
 | v1 atlas | Whole system at once, 21 structures, two packet flows | Fine as a first draft — but expect "hard to parse" |
 | Feedback 1 | "Make it easier via progressive disclosure"; "better box shapes/labelling" | Chapters + role shapes + labels — now the default |
-| Text twin | "Keep a text version in context/ADRs" → a glossary (nouns only), 7 ADRs, SYSTEM.md generated from atlas data, README | Generate the text from the atlas data from day one |
+| Text twin | "Keep a text version in context/ADRs" → CONTEXT.md (glossary only), 7 ADRs, SYSTEM.md generated from atlas data, README | Generate the text from the atlas data from day one |
 | Question rounds | The user answered by structure; several "this is not a question", "I don't get this — give a concrete example", "this is a stupid question because…" | Explain before resolving; drop non-questions; thank and move on |
 | Deep dive | Scope set by the user (two vendors + a simpler DIY); three researchers on one brief with a shared usage model; synthesis with a normalized $/user/month grid; two different model cost bases | Normalize costs so columns carry the same components; fetch prices live (a cached price was wrong by 33%) |
 | Rejected proposal | The synthesis proposed a "truth table in Neon, vendor as index"; the user asked what it was, then rejected it as v0 state ("YAGNI"), and later noticed the doc still described it | After a rejection, sweep every file and rewrite — a banner is not enough |
@@ -23,23 +23,17 @@ From the session this skill was distilled from: one agent-architecture atlas, bu
 | File | Role | Edit it? |
 |---|---|---|
 | `atlas/data.mjs` | Single source of truth: structures, flows, chapters, decisions, questions, cost model, prose | Yes |
-| `atlas/template.html` + `atlas/build.mjs` + `atlas/validate.mjs` | Rendering, generator, and the data check that runs before every build | Presentation only |
-| `atlas/sketch.mjs` + `atlas/layout.mjs` + `atlas/fold.mjs` | Generates, lays out and merges the Excalidraw sketch; reads it back as proposals | Presentation only |
-| `atlas/sketch-base.json`, `atlas/sketch-proposal.json` | What the last build exported; the last numbered proposal | No (generated) |
-| `atlas/sketch/` | Optional local Excalidraw editor (Vite + React + TypeScript) | Presentation only; `node_modules/` stays ignored |
+| `atlas/template.html` + `atlas/build.mjs` | Rendering + generator | Presentation only |
 | `atlas.html` | Built atlas; republished at the same URL after every rebuild | No (generated) |
-| `atlas.excalidraw` | Sketch: generated boxes and arrows plus the user's own drawing and notes | The user draws on it; the agent folds it and never draws in it |
 | `SYSTEM.md` | Built text twin | No (generated) |
-| `NOTES.md` | Atlas URL, locked decisions with dates, rejections and why, next step | Yes |
+| `CONTEXT.md` | Glossary (domain-modeling convention) | By hand |
+| `adr/` | Hard-to-reverse decisions | By hand |
 | `research/` | Evidence | Append-only |
-
-The glossary and ADRs live where the repo's domain-doc convention puts them, not in this folder.
 
 ## Subagent pattern for deep dives
 
 - Write one `BRIEF.md`: the port/interface we own, requirements that separate candidates, a usage model (scenarios × cadences × fleet sizes) and a fixed deliverable shape (sections, citations, return only a ≤250-word summary + grid + path).
 - One general-purpose subagent per candidate, in parallel, writing reports to files; the main agent synthesizes (fit table, normalized cost grid, verdict, per-question resolutions, "considered and rejected").
-- If a `research` skill is available, it replaces this pattern: one research file per question, routed as `{q, to: 'research: <file>'}`.
 - Copy reports into the atlas home's `research/`; fold resolutions into `data.mjs` as `{q, r: '… (from the deep dive, date)'}`.
 
 ## Cost-model habits

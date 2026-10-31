@@ -1,17 +1,9 @@
-// Builds <outDir>/SYSTEM.md, <outDir>/atlas.html and <outDir>/atlas.excalidraw from data.mjs (same folder).
-// Usage: node <atlasDir>/build.mjs (or bun)   — outDir = parent of atlasDir by default, or META.outDir
+// Builds <outDir>/SYSTEM.md and <outDir>/atlas.html from data.mjs (same folder).
+// Usage: bun <atlasDir>/build.mjs   — outDir = parent of atlasDir by default, or META.outDir
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { META, DECISIONS, GROUPS, NODES, FLOWS, CH, HOW_HTML } from './data.mjs';
-import { buildScene, readJson, readSketch, sketchPaths, writeAtomic } from './sketch.mjs';
-import { isoWarnings, validate } from './validate.mjs';
-
-const problems = validate({ META, DECISIONS, GROUPS, NODES, FLOWS, CH });
-if (problems.length) {
-  console.error(`data.mjs has ${problems.length} problem${problems.length > 1 ? 's' : ''}; nothing was written:\n` + problems.map((p) => `  - ${p}`).join('\n'));
-  process.exit(1);
-}
 
 const here = dirname(fileURLToPath(import.meta.url));
 const outDir = META.outDir ? join(here, META.outDir) : join(here, '..');
@@ -39,14 +31,14 @@ NODES.forEach((n) => (n.cond || []).map(Q).forEach((c) => (c.r || c.to ? cnt.res
 function buildSystemMd() {
   const out = [];
   out.push(`# ${META.title} — System Definition`, '');
-  if (META.intro) out.push(META.intro, '');
+  out.push(META.intro, '');
   out.push(`_Question status: **${cnt.open} open · ${cnt.res} resolved**._`, '');
   out.push('## One paragraph', '', META.onePara, '');
   out.push('## Decisions locked', '', '| Axis | Decision | ADR |', '|---|---|---|');
   DECISIONS.forEach((d) => out.push(`| ${d.axis} | ${d.decision} | ${d.adr} |`));
   out.push('');
   out.push('## Cost model', '');
-  (META.costModel ?? []).forEach((l) => out.push(l));
+  META.costModel.forEach((l) => out.push(l));
   if (META.deepDive) out.push('## Deep dives', '', META.deepDive, '');
   out.push('## Reading order (the atlas chapters)', '');
   CH.forEach((c, i) => out.push(`${i + 1}. **${c.title}** — ${md(c.lede)}${c.reveal.length ? ` _(adds ${c.reveal.join(', ')})_` : ''}`));
@@ -88,7 +80,7 @@ function buildSystemMd() {
   out.push('');
   if (META.platformGives || META.weOwn) out.push('## What the platform gives vs what we own', '', `**Platform gives:** ${META.platformGives||''}`, '', `**We own:** ${META.weOwn||''}`, '');
   if (META.filesystem) out.push('## Planned filesystem', '', '```', META.filesystem.trimEnd(), '```', '');
-  out.push('## How this file is maintained', '', `Generated from \`${META.sourcePath||'atlas/data.mjs'}\` by \`${META.buildCmd||'node atlas/build.mjs'}\`, which also builds the interactive atlas (\`atlas.html\`${META.artifactUrl?`, published at ${META.artifactUrl}`:''}). Edit the data file, rebuild, republish — never edit this file by hand.`, '');
+  out.push('## How this file is maintained', '', `Generated from \`${META.sourcePath||'atlas/data.mjs'}\` by \`${META.buildCmd||'bun atlas/build.mjs'}\`, which also builds the interactive atlas (\`atlas.html\`${META.artifactUrl?`, published at ${META.artifactUrl}`:''}). Edit the data file, rebuild, republish — never edit this file by hand.`, '');
   return out.join('\n');
 }
 
@@ -109,15 +101,4 @@ function buildAtlasHtml() {
 
 writeFileSync(join(outDir, 'SYSTEM.md'), buildSystemMd());
 writeFileSync(join(outDir, 'atlas.html'), buildAtlasHtml());
-
-// atlas.excalidraw: regenerate the generated elements, keep the user's sketching.
-const sk = sketchPaths(here, META);
-const { scene, base, warnings: sketchWarnings } = buildScene({ META, NODES, FLOWS }, readJson(sk.scene), readJson(sk.base));
-writeAtomic(sk.scene, JSON.stringify(scene, null, 2));
-writeAtomic(sk.base, JSON.stringify(base, null, 2));
-const pending = readSketch({ NODES, FLOWS }, scene, base).items.length;
-// Not fatal (the files are written), but a legible atlas has none of these.
-const warnings = [...isoWarnings({ NODES }), ...sketchWarnings.map((w) => `sketch: ${w}`)];
-if (warnings.length) console.warn(`${warnings.length} legibility warning${warnings.length > 1 ? 's' : ''}:\n` + warnings.map((w) => `  - ${w}`).join('\n'));
-
-console.log(`built SYSTEM.md + atlas.html + atlas.excalidraw · ${cnt.open} open · ${cnt.res} resolved · ${NODES.length} structures · ${DECISIONS.length} decisions${pending ? ` · ${pending} unfolded sketch edits (node ${join(here, 'fold.mjs')})` : ''}`);
+console.log(`built SYSTEM.md + atlas.html · ${cnt.open} open · ${cnt.res} resolved · ${NODES.length} structures · ${DECISIONS.length} decisions`);
