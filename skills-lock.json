@@ -1,6 +1,13 @@
 {
   "version": 1,
   "skills": {
+    "axonometric": {
+      "source": "mippbipp/axonometric",
+      "sourceType": "github",
+      "skillPath": "skills/axonometric/SKILL.md",
+      "computedHash": "7329ee509da3502d895500be9239a1095d17b9d8c13e0d6912ed41f97b653da9",
+      "installMode": "copy"
+    },
     "convex": {
       "source": "get-convex/agent-skills",
       "sourceType": "github",
