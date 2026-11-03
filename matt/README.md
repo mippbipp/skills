@@ -3,7 +3,7 @@
 Curated copy of [mattpocock/skills](https://github.com/mattpocock/skills), laid out in
 upstream's bucket structure.
 
-- **Upstream commit:** `49dd158` (2026-10-09), package version `1.3.1` plus unreleased changesets
+- **Upstream commit:** `4ae2317` (2026-10-31), package version `1.3.2`
 - **Buckets:** `engineering/` (20 skills), `productivity/` (7 skills)
 - **Excluded:** `misc/`, `in-progress/`, `deprecated/` (not promoted upstream)
 
